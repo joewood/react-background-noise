@@ -12,6 +12,10 @@ export interface IProps {
     width: number;
     height: number;
     gridSize: number;
+    /** Contrast filter, each color component as a value 0-255. Defaults to {r:16,b;16,g:16} */
+    contrast?: { r: number, g: number, b: number };
+    /** Brightness filter, each color component as a value 0-255. Defaults to {r:24,b;24,g:24} */
+    brightness?: { r: number, g: number, b: number };
     customRandom?: { random(): number; };
 }
 
@@ -20,12 +24,15 @@ export interface IState {
 }
 
 
-export default class ClassicalNoise extends React.Component<IProps, IState>{
+export default class ClassicalNoise extends React.PureComponent<IProps, IState>{
     private canvas: HTMLCanvasElement;
+    private dstCanvas: HTMLCanvasElement;
 
-    private static grad3 = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0],
-    [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1],
-    [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]];
+    private static grad3 = [
+        [1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0],
+        [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1],
+        [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]
+    ];
     private perm: number[] = [];
     private randomPoints: number[] = [];
 
@@ -44,53 +51,68 @@ export default class ClassicalNoise extends React.Component<IProps, IState>{
         this.state = { image: this.updateImage(props) };
     }
 
+    public componentWillReceiveProps(newProps: IProps) {
+        this.setState({ image: this.updateImage(newProps) });
+    }
+
     private updateImage(props: IProps): ImageData {
         // create a destination canvas. 
-        const dstCanvas = document.createElement("canvas");
-        dstCanvas.width = 1024;
-        dstCanvas.height = 1024;
+        const { contrast, brightness } = this.props;
+
+        this.dstCanvas = document.createElement("canvas");
+        this.dstCanvas.width = this.props.width;
+        this.dstCanvas.height = this.props.height;
 
         // get context to work with
-        var dstContext = dstCanvas.getContext("2d");
+        const dstContext = this.dstCanvas.getContext("2d");
 
         // create image data
-        const image = dstContext.createImageData(dstCanvas.width, dstCanvas.height);
+        const image = dstContext.getImageData(0, 0, this.dstCanvas.width, this.dstCanvas.height);// createImageData(dstCanvas.width / 2, dstCanvas.height / 2);
         const gridSize = props.gridSize || 16;
+
+        const contrastR = (contrast && contrast.r || 16) / 256;
+        const contrastG = (contrast && contrast.g || 16) / 256;
+        const contrastB = (contrast && contrast.b || 16) / 256;
+        const brightnessR = (brightness && brightness.r || 24);
+        const brightnessG = (brightness && brightness.g || 24);
+        const brightnessB = (brightness && brightness.b || 24);
+
         // iterate through pixel data (1 pixels consists of 4 ints in the array)
         for (var i = 0, len = image.data.length; i < len; i += 4) {
-            var x = Math.floor((i / 4) % dstCanvas.width);
-            var y = Math.floor((i / 4) / dstCanvas.width);
+            var x = Math.floor((i / 4) % this.dstCanvas.width);
+            var y = Math.floor((i / 4) / this.dstCanvas.width);
 
             // since n is -1..1, add +1 and multiply with 127 to get 0..255
-            var n = (this.turbulence(x / gridSize, y / gridSize, 0, dstCanvas.width) + 1) * 127;
+            var n = (this.turbulence(x / gridSize, y / gridSize, 0, this.dstCanvas.width) + 1) * 127;
 
-            image.data[i] = n / 16 + 24;
-            image.data[i + 1] = n / 16 + 24;
-            image.data[i + 2] = n / 16 + 24;
+            image.data[i] = n * contrastR + brightnessR;
+            image.data[i + 1] = n * contrastG + brightnessG;
+            image.data[i + 2] = n * contrastB + brightnessB;
             image.data[i + 3] = 255;
         }
+        dstContext.putImageData(image, 0, 0);
         return image;
 
     }
 
-    private dot(g, x, y, z) {
-        return g[0] * x + g[1] * y + g[2] * z;
+    private dot(vec: number[], x: number, y: number, z: number) {
+        return vec[0] * x + vec[1] * y + vec[2] * z;
     }
 
-    private mix(a, b, t) {
-        return (1.0 - t) * a + t * b;
+    private mix(a: number, b: number, mixFactor: number) {
+        return (1.0 - mixFactor) * a + mixFactor * b;
     }
 
-    private fade(t) {
+    private fade(t: number) {
         return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     };
 
     // Classic Perlin noise, 3D version 
-    private noise(x, y, z) {
+    private noise(x: number, y: number, z: number) {
         // Find unit grid cell containing point 
-        var X = Math.floor(x);
-        var Y = Math.floor(y);
-        var Z = Math.floor(z);
+        let X = Math.floor(x);
+        let Y = Math.floor(y);
+        let Z = Math.floor(z);
 
         // Get relative xyz coordinates of point within that cell 
         x = x - X;
@@ -102,14 +124,14 @@ export default class ClassicalNoise extends React.Component<IProps, IState>{
         Y = Y & 255;
         Z = Z & 255;
         // Calculate a set of eight hashed gradient indices 
-        var gi000 = this.perm[X + this.perm[Y + this.perm[Z]]] % 12;
-        var gi001 = this.perm[X + this.perm[Y + this.perm[Z + 1]]] % 12;
-        var gi010 = this.perm[X + this.perm[Y + 1 + this.perm[Z]]] % 12;
-        var gi011 = this.perm[X + this.perm[Y + 1 + this.perm[Z + 1]]] % 12;
-        var gi100 = this.perm[X + 1 + this.perm[Y + this.perm[Z]]] % 12;
-        var gi101 = this.perm[X + 1 + this.perm[Y + this.perm[Z + 1]]] % 12;
-        var gi110 = this.perm[X + 1 + this.perm[Y + 1 + this.perm[Z]]] % 12;
-        var gi111 = this.perm[X + 1 + this.perm[Y + 1 + this.perm[Z + 1]]] % 12;
+        const gi000 = this.perm[X + this.perm[Y + this.perm[Z]]] % 12;
+        const gi001 = this.perm[X + this.perm[Y + this.perm[Z + 1]]] % 12;
+        const gi010 = this.perm[X + this.perm[Y + 1 + this.perm[Z]]] % 12;
+        const gi011 = this.perm[X + this.perm[Y + 1 + this.perm[Z + 1]]] % 12;
+        const gi100 = this.perm[X + 1 + this.perm[Y + this.perm[Z]]] % 12;
+        const gi101 = this.perm[X + 1 + this.perm[Y + this.perm[Z + 1]]] % 12;
+        const gi110 = this.perm[X + 1 + this.perm[Y + 1 + this.perm[Z]]] % 12;
+        const gi111 = this.perm[X + 1 + this.perm[Y + 1 + this.perm[Z + 1]]] % 12;
 
         // The gradients of each corner are now: 
         // g000 = grad3[gi000]; 
@@ -121,44 +143,45 @@ export default class ClassicalNoise extends React.Component<IProps, IState>{
         // g110 = grad3[gi110]; 
         // g111 = grad3[gi111]; 
         // Calculate noise contributions from each of the eight corners 
-        var n000 = this.dot(ClassicalNoise.grad3[gi000], x, y, z);
-        var n100 = this.dot(ClassicalNoise.grad3[gi100], x - 1, y, z);
-        var n010 = this.dot(ClassicalNoise.grad3[gi010], x, y - 1, z);
-        var n110 = this.dot(ClassicalNoise.grad3[gi110], x - 1, y - 1, z);
-        var n001 = this.dot(ClassicalNoise.grad3[gi001], x, y, z - 1);
-        var n101 = this.dot(ClassicalNoise.grad3[gi101], x - 1, y, z - 1);
-        var n011 = this.dot(ClassicalNoise.grad3[gi011], x, y - 1, z - 1);
-        var n111 = this.dot(ClassicalNoise.grad3[gi111], x - 1, y - 1, z - 1);
+        const n000 = this.dot(ClassicalNoise.grad3[gi000], x, y, z);
+        const n100 = this.dot(ClassicalNoise.grad3[gi100], x - 1, y, z);
+        const n010 = this.dot(ClassicalNoise.grad3[gi010], x, y - 1, z);
+        const n110 = this.dot(ClassicalNoise.grad3[gi110], x - 1, y - 1, z);
+        const n001 = this.dot(ClassicalNoise.grad3[gi001], x, y, z - 1);
+        const n101 = this.dot(ClassicalNoise.grad3[gi101], x - 1, y, z - 1);
+        const n011 = this.dot(ClassicalNoise.grad3[gi011], x, y - 1, z - 1);
+        const n111 = this.dot(ClassicalNoise.grad3[gi111], x - 1, y - 1, z - 1);
         // Compute the fade curve value for each of x, y, z 
-        var u = this.fade(x);
-        var v = this.fade(y);
-        var w = this.fade(z);
+        const u = this.fade(x);
+        const v = this.fade(y);
+        const w = this.fade(z);
         // Interpolate along x the contributions from each of the corners 
-        var nx00 = this.mix(n000, n100, u);
-        var nx01 = this.mix(n001, n101, u);
-        var nx10 = this.mix(n010, n110, u);
-        var nx11 = this.mix(n011, n111, u);
+        const nx00 = this.mix(n000, n100, u);
+        const nx01 = this.mix(n001, n101, u);
+        const nx10 = this.mix(n010, n110, u);
+        const nx11 = this.mix(n011, n111, u);
         // Interpolate the four results along y 
-        var nxy0 = this.mix(nx00, nx10, v);
-        var nxy1 = this.mix(nx01, nx11, v);
+        const nxy0 = this.mix(nx00, nx10, v);
+        const nxy1 = this.mix(nx01, nx11, v);
         // Interpolate the two last results along z 
-        var nxyz = this.mix(nxy0, nxy1, w);
+        const nxyz = this.mix(nxy0, nxy1, w);
 
         return nxyz;
     };
 
-    private turbulence(x, y, z, W) {
-        let t = -.5;
-        for (let f = 1; f <= W / 12; f *= 2) { // W = Image width in pixels
-            t += Math.abs(this.noise(x, y, z) / f);
+    private turbulence(x: number, y: number, z: number, width: number) {
+        let turbulence = -0.5;
+        for (let f = 1; f <= width / 12; f *= 2) { // W = Image width in pixels
+            turbulence += Math.abs(this.noise(x, y, z) / f);
         }
-        return t;
+        return turbulence;
     }
 
     private renderToCanvas() {
         if (!this.canvas || !this.state.image) return;
         const context = this.canvas.getContext("2d");
-        context.putImageData(this.state.image, 0, 0);
+        // context.putImageData(this.state.image, 0, 0, 0, 0, this.props.width, this.props.height);
+        context.drawImage(this.dstCanvas, 0, 0, this.dstCanvas.width, this.dstCanvas.height, 0, 0, this.props.width, this.props.height);
     }
 
 

@@ -34,7 +34,7 @@ function Panel(p: { rate: number }) {
 
 
 ReactDOM.render((
-    <Background gridSize={16} width={1000} height={800}  >
+    <Background gridSize={8} contrast={{ r: 20, g: 7, b: 7 }} brightness={{ r: 18, g: 18, b: 18 }} width={1000} height={800}  >
         <Panel rate={62.31} />
         <Panel rate={12.12} />
     </Background>), document.getElementById("root"));
