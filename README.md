@@ -1,5 +1,9 @@
 # react-background-noise
 
+Simple component that renders a Perlin Noise Classical pattern as a background image. The render is cached to speed re-renders.
+
+Taken from Sean McCullough's [port](https://gist.github.com/banksean/304522). Which was based off of Stefan Gustavson's [Java implementation and Paper](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf)
+
 ## Installation
 
 ```
@@ -16,7 +20,9 @@ import Background from "react-background-noise"
 </Background>
 ```
 
-![screen-grab]("./test/react-background.png")
+See **test** directory for more examples.
+
+![screen-grab](test/react-background.png)
 
 ## Additional Properties
 
