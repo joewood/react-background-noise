@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom"
 import Background from "../lib/"
 
-function Panel(p: { rate: number }) {
+function Panel(p: { heading:string, rate: number }) {
     return (
         <div style={{
             color: "white",
@@ -13,7 +13,7 @@ function Panel(p: { rate: number }) {
                 display: "block",
                 margin: 20,
                 padding: 10
-            }}>Message Rate</div>
+            }}>{p.heading}</div>
             <div key='two'
                 style={{
                     fontSize: 38,
@@ -34,7 +34,7 @@ function Panel(p: { rate: number }) {
 
 
 ReactDOM.render((
-    <Background gridSize={8} contrast={{ r: 20, g: 7, b: 7 }} brightness={{ r: 18, g: 18, b: 18 }} width={1000} height={800}  >
-        <Panel rate={62.31} />
-        <Panel rate={12.12} />
+    <Background gridSize={24} contrast={{ r: 30, g: 7, b: 7 }} brightness={{ r: 18, g: 18, b: 18 }} width={1000} height={800}  >
+        <Panel heading="Highest" rate={62.31} />
+        <Panel heading="Lowest" rate={12.12} />
     </Background>), document.getElementById("root"));

@@ -9943,7 +9943,7 @@ function Panel(p) {
                 display: "block",
                 margin: 20,
                 padding: 10
-            } }, "Message Rate"),
+            } }, p.heading),
         React.createElement("div", { key: 'two', style: {
                 fontSize: 38,
                 borderRadius: 10,
@@ -9959,9 +9959,9 @@ function Panel(p) {
             "%",
             React.createElement("hr", null))));
 }
-ReactDOM.render((React.createElement(_1.default, { gridSize: 8, contrast: { r: 20, g: 7, b: 7 }, brightness: { r: 18, g: 18, b: 18 }, width: 1000, height: 800 },
-    React.createElement(Panel, { rate: 62.31 }),
-    React.createElement(Panel, { rate: 12.12 }))), document.getElementById("root"));
+ReactDOM.render((React.createElement(_1.default, { gridSize: 24, contrast: { r: 30, g: 7, b: 7 }, brightness: { r: 18, g: 18, b: 18 }, width: 1000, height: 800 },
+    React.createElement(Panel, { heading: "Highest", rate: 62.31 }),
+    React.createElement(Panel, { heading: "Lowest", rate: 12.12 }))), document.getElementById("root"));
 
 
 /***/ }),
