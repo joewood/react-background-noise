@@ -25,22 +25,13 @@ export interface IProps {
     };
 }
 export interface IState {
-    image: ImageData;
 }
 export default class ClassicalNoise extends React.PureComponent<IProps, IState> {
     private canvas;
-    private dstCanvas;
-    private static grad3;
-    private perm;
-    private randomPoints;
+    private igloo;
     constructor(props: IProps);
+    componentWillMount(): void;
     componentWillReceiveProps(newProps: IProps): void;
-    private updateImage(props);
-    private dot(vec, x, y, z);
-    private mix(a, b, mixFactor);
-    private fade(t);
-    private noise(x, y, z);
-    private turbulence(x, y, z, width);
-    private renderToCanvas();
+    private setupCanvas;
     render(): JSX.Element;
 }

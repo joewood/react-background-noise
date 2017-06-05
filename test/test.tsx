@@ -34,7 +34,7 @@ function Panel(p: { heading:string, rate: number }) {
 
 
 ReactDOM.render((
-    <Background gridSize={24} contrast={{ r: 30, g: 7, b: 7 }} brightness={{ r: 18, g: 18, b: 18 }} width={1000} height={800}  >
+    <Background gridSize={24} contrast={{ r: 7, g: 7, b: 7 }} brightness={{ r: 48, g: 48, b: 48 }} width={1000} height={800}  >
         <Panel heading="Highest" rate={62.31} />
         <Panel heading="Lowest" rate={12.12} />
     </Background>), document.getElementById("root"));
