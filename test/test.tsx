@@ -42,17 +42,31 @@ function Panel(p: { heading: string; rate: number }) {
 	);
 }
 
-ReactDOM.render(
-	<Background
-		key="root"
-		gridSize={24}
-		contrast={{ r: 7, g: 7, b: 7 }}
-		brightness={{ r: 48, g: 48, b: 48 }}
-		width={1000}
-		height={800}
-	>
-		<Panel heading="Highest" rate={62.31} />
-		<Panel heading="Lowest" rate={12.12} />
-	</Background>,
-	document.getElementById("root")
-);
+class TestBackground extends React.Component<{}, { width: number }> {
+	public state = { width: 100 };
+	private timer: any = null;
+
+	public componentDidMount() {
+		this.timer = setInterval(() => {
+			this.setState({ width: (this.state.width % 1500) + 10 });
+		}, 100);
+	}
+
+	public render() {
+		return (
+			<Background
+				key="root"
+				gridSize={24}
+				contrast={{ r: 7, g: 7, b: 7 }}
+				brightness={{ r: 48, g: 48, b: 48 }}
+				width={this.state.width}
+				height={800}
+			>
+				<Panel heading="Highest" rate={62.31} />
+				<Panel heading="Lowest" rate={12.12} />
+			</Background>
+		);
+	}
+}
+
+ReactDOM.render(<TestBackground />, document.getElementById("root"));

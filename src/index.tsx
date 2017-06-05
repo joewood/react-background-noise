@@ -42,13 +42,17 @@ export default class ClassicalNoise extends React.PureComponent<IProps, IState> 
 
 	public componentDidUpdate() {
 		// now mounted, if the current size is different to the previous size then re-render
-		if (this.state.oldHeight!==this.props.height|| this.state.oldWidth!==this.props.width){
+		if (this.state.oldHeight !== this.props.height || this.state.oldWidth !== this.props.width) {
 			if (!!this.canvas) this.setupCanvas(this.canvas);
 		}
 	}
 
-	private setupCanvas = canvas => {
+	private setupCanvas = (canvas:HTMLCanvasElement) => {
 		try {
+			if (!this.canvas) {
+				canvas.addEventListener("webglcontextlost", event => event.preventDefault(), false);
+				this.canvas = canvas;
+			}
 			let { brightness, contrast } = this.props;
 			brightness = brightness || { r: 25, g: 25, b: 25 };
 			contrast = contrast || { r: 25, g: 20, b: 15 };
@@ -56,7 +60,6 @@ export default class ClassicalNoise extends React.PureComponent<IProps, IState> 
 			const igloo = new Igloo(canvas);
 			const gl = igloo.gl;
 			// if we lose context, ignore - no need to restore we're not animating
-			canvas.addEventListener("webglcontextlost", event => event.preventDefault(), false);
 
 			// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 			gl.viewport(0, 0, this.props.width, this.props.height);

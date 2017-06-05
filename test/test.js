@@ -9929,6 +9929,16 @@ module.exports = __webpack_require__(/*! ./lib/React */ 19);
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ 80);
 var ReactDOM = __webpack_require__(/*! react-dom */ 101);
@@ -9959,9 +9969,28 @@ function Panel(p) {
             "%",
             React.createElement("hr", null))));
 }
-ReactDOM.render(React.createElement(_1.default, { key: "root", gridSize: 24, contrast: { r: 7, g: 7, b: 7 }, brightness: { r: 48, g: 48, b: 48 }, width: 1000, height: 800 },
-    React.createElement(Panel, { heading: "Highest", rate: 62.31 }),
-    React.createElement(Panel, { heading: "Lowest", rate: 12.12 })), document.getElementById("root"));
+var TestBackground = (function (_super) {
+    __extends(TestBackground, _super);
+    function TestBackground() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.state = { width: 100 };
+        _this.timer = null;
+        return _this;
+    }
+    TestBackground.prototype.componentDidMount = function () {
+        var _this = this;
+        this.timer = setInterval(function () {
+            _this.setState({ width: (_this.state.width % 1500) + 10 });
+        }, 100);
+    };
+    TestBackground.prototype.render = function () {
+        return (React.createElement(_1.default, { key: "root", gridSize: 24, contrast: { r: 7, g: 7, b: 7 }, brightness: { r: 48, g: 48, b: 48 }, width: this.state.width, height: 800 },
+            React.createElement(Panel, { heading: "Highest", rate: 62.31 }),
+            React.createElement(Panel, { heading: "Lowest", rate: 12.12 })));
+    };
+    return TestBackground;
+}(React.Component));
+ReactDOM.render(React.createElement(TestBackground, null), document.getElementById("root"));
 
 
 /***/ }),
@@ -9995,13 +10024,16 @@ var ClassicalNoise = (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.setupCanvas = function (canvas) {
             try {
+                if (!_this.canvas) {
+                    canvas.addEventListener("webglcontextlost", function (event) { return event.preventDefault(); }, false);
+                    _this.canvas = canvas;
+                }
                 var _a = _this.props, brightness = _a.brightness, contrast = _a.contrast;
                 brightness = brightness || { r: 25, g: 25, b: 25 };
                 contrast = contrast || { r: 25, g: 20, b: 15 };
                 var igloo = new igloo_ts_1.default(canvas);
                 var gl = igloo.gl;
                 // if we lose context, ignore - no need to restore we're not animating
-                canvas.addEventListener("webglcontextlost", function (event) { return event.preventDefault(); }, false);
                 // gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
                 gl.viewport(0, 0, _this.props.width, _this.props.height);
                 var iglooProgram = igloo.program(shaders_1.vertex, shaders_1.pixel).use();

@@ -1,6 +1,6 @@
 # react-background-noise
 
-Simple component that renders a Perlin Noise Classical pattern as a background image. The render uses WebGL shader from [Stefan Gustavson](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf)
+Simple component that renders a Perlin Noise Classical pattern as a background WebGL pattern. The render uses WebGL shader from [Stefan Gustavson](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf)
 
 ## Installation
 
