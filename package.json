@@ -1,6 +1,6 @@
 {
   "name": "react-background-noise",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React Component for Noise Generated background",
   "main": "lib/index.js",
   "scripts": {

@@ -9998,39 +9998,35 @@ var ClassicalNoise = (function (_super) {
                 var _a = _this.props, brightness = _a.brightness, contrast = _a.contrast;
                 brightness = brightness || { r: 25, g: 25, b: 25 };
                 contrast = contrast || { r: 25, g: 20, b: 15 };
-                _this.canvas = canvas;
-                _this.igloo = new igloo_ts_1.default(canvas);
-                var gl = _this.igloo.gl;
+                var igloo = new igloo_ts_1.default(canvas);
+                var gl = igloo.gl;
+                // if we lose context, ignore - no need to restore we're not animating
+                canvas.addEventListener("webglcontextlost", function (event) { return event.preventDefault(); }, false);
                 gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-                var iprogram = _this.igloo.program(shaders_1.vertex, shaders_1.pixel).use();
-                var program = iprogram["program"];
-                iprogram.uniform("brightness", [brightness.r / 256, brightness.g / 256, brightness.b / 256, 1.0]);
-                iprogram.uniform("contrast", [contrast.r / 256, contrast.g / 256, contrast.b / 256, 1.0]);
-                var buffer = _this.igloo.array(new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]), gl.STATIC_DRAW);
-                buffer.bind();
+                var iglooProgram = igloo.program(shaders_1.vertex, shaders_1.pixel).use();
+                var glProgram = iglooProgram["program"];
+                iglooProgram.uniform("brightness", [brightness.r / 256, brightness.g / 256, brightness.b / 256, 1.0]);
+                iglooProgram.uniform("contrast", [contrast.r / 256, contrast.g / 256, contrast.b / 256, 1.0]);
+                var verticesBuffer = igloo.array(new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]), gl.STATIC_DRAW);
+                verticesBuffer.bind();
                 gl.clearColor(0.0, 0.0, 0.0, 1.0);
                 gl.clear(gl.COLOR_BUFFER_BIT);
-                var positionLocation = gl.getAttribLocation(program, "a_position");
+                var positionLocation = gl.getAttribLocation(glProgram, "a_position");
                 gl.enableVertexAttribArray(positionLocation);
                 gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
                 gl.drawArrays(gl.TRIANGLES, 0, 6);
+                gl.finish();
             }
             catch (e) {
-                console.error("GL", e);
+                console.error("Set-up Error", e);
             }
         };
         _this.state = {};
         return _this;
     }
-    ClassicalNoise.prototype.componentWillMount = function () { };
-    ClassicalNoise.prototype.componentWillReceiveProps = function (newProps) {
-        // this.setState({ image: this.updateImage(newProps) });
-    };
+    ClassicalNoise.prototype.componentWillReceiveProps = function (newProps) { };
     ClassicalNoise.prototype.render = function () {
         var _a = this.props, width = _a.width, height = _a.height, children = _a.children;
-        // var noise = new ClassicalNoise();
-        // modify gridSize to get finer or coarser noise
-        // write pixel data to destination context
         return (React.createElement("div", { style: { width: width, height: height, position: "relative" } },
             React.createElement("canvas", { key: "canvas", style: { position: "absolute", top: 0, left: 0 }, width: width, height: height, ref: this.setupCanvas }),
             React.createElement("div", { key: "content", style: {
@@ -10044,7 +10040,7 @@ var ClassicalNoise = (function (_super) {
     return ClassicalNoise;
 }(React.PureComponent));
 exports.default = ClassicalNoise;
-
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 /* 83 */
@@ -10060,7 +10056,7 @@ exports.default = ClassicalNoise;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.vertex = "\n        precision mediump float;\n        attribute vec2 a_position;\n        void main() {\n            gl_Position = vec4(a_position, 0.0, 1.0);\n        }";
 exports.pixel = "\n        // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n        // Created by S.Guillitte \n        //\n        // Copyright (c) 2011 Stefan Gustavson. All rights reserved.\n        // Distributed under the MIT license. See LICENSE file.\n        // https://github.com/stegu/webgl-noise\n        //\n        precision mediump float;\n        uniform vec4 brightness;\n        uniform vec4 contrast;\n\n        vec4 mod289(vec4 x)\n        {\n        return x - floor(x * (1.0 / 289.0)) * 289.0;\n        }\n\n        vec4 permute(vec4 x)\n        {\n        return mod289(((x*34.0)+1.0)*x);\n        }\n\n        vec4 taylorInvSqrt(vec4 r)\n        {\n        return 1.79284291400159 - 0.85373472095314 * r;\n        }\n\n        vec2 fade(vec2 t) {\n        return t*t*t*(t*(t*6.0-15.0)+10.0);\n        }\n\n        // Classic Perlin noise\n        float cnoise(vec2 P)\n        {\n        vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);\n        vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);\n        Pi = mod289(Pi); // To avoid truncation effects in permutation\n        vec4 ix = Pi.xzxz;\n        vec4 iy = Pi.yyww;\n        vec4 fx = Pf.xzxz;\n        vec4 fy = Pf.yyww;\n\n        vec4 i = permute(permute(ix) + iy);\n\n        vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;\n        vec4 gy = abs(gx) - 0.5 ;\n        vec4 tx = floor(gx + 0.5);\n        gx = gx - tx;\n\n        vec2 g00 = vec2(gx.x,gy.x);\n        vec2 g10 = vec2(gx.y,gy.y);\n        vec2 g01 = vec2(gx.z,gy.z);\n        vec2 g11 = vec2(gx.w,gy.w);\n\n        vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));\n        g00 *= norm.x;  \n        g01 *= norm.y;  \n        g10 *= norm.z;  \n        g11 *= norm.w;  \n\n        float n00 = dot(g00, vec2(fx.x, fy.x));\n        float n10 = dot(g10, vec2(fx.y, fy.y));\n        float n01 = dot(g01, vec2(fx.z, fy.z));\n        float n11 = dot(g11, vec2(fx.w, fy.w));\n\n        vec2 fade_xy = fade(Pf.xy);\n        vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);\n        float n_xy = mix(n_x.x, n_x.y, fade_xy.y);\n        return 2.3 * n_xy;\n        }\n\n        void main()\n        {\n            float tt = cnoise(gl_FragCoord.xy*0.07);\n            gl_FragColor = vec4(tt*contrast.r+brightness.r,tt*contrast.g+brightness.g,tt*contrast.b+brightness.b,1.0); \n        }";
-
+//# sourceMappingURL=shaders.js.map
 
 /***/ }),
 /* 84 */

@@ -28,9 +28,7 @@ export interface IState {
 }
 export default class ClassicalNoise extends React.PureComponent<IProps, IState> {
     private canvas;
-    private igloo;
     constructor(props: IProps);
-    componentWillMount(): void;
     componentWillReceiveProps(newProps: IProps): void;
     private setupCanvas;
     render(): JSX.Element;
