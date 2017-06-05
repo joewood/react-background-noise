@@ -25,11 +25,14 @@ export interface IProps {
     };
 }
 export interface IState {
+    oldWidth: number;
+    oldHeight: number;
 }
 export default class ClassicalNoise extends React.PureComponent<IProps, IState> {
     private canvas;
     constructor(props: IProps);
     componentWillReceiveProps(newProps: IProps): void;
+    componentDidUpdate(): void;
     private setupCanvas;
     render(): JSX.Element;
 }

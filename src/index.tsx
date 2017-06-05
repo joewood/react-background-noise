@@ -20,17 +20,32 @@ export interface IProps {
 	customRandom?: { random(): number };
 }
 
-export interface IState {}
+export interface IState {
+	oldWidth: number;
+	oldHeight: number;
+}
 
 export default class ClassicalNoise extends React.PureComponent<IProps, IState> {
 	private canvas: HTMLCanvasElement;
 
 	constructor(props: IProps) {
 		super(props);
-		this.state = {};
+		this.state = { oldWidth: props.width, oldHeight: props.height };
 	}
 
-	public componentWillReceiveProps(newProps: IProps) {}
+	public componentWillReceiveProps(newProps: IProps) {
+		// if the size has changed then store the new size in the state
+		if (newProps.width !== this.props.width || newProps.height !== this.props.height) {
+			this.setState({ oldWidth: this.props.width, oldHeight: this.props.height });
+		}
+	}
+
+	public componentDidUpdate() {
+		// now mounted, if the current size is different to the previous size then re-render
+		if (this.state.oldHeight!==this.props.height|| this.state.oldWidth!==this.props.width){
+			if (!!this.canvas) this.setupCanvas(this.canvas);
+		}
+	}
 
 	private setupCanvas = canvas => {
 		try {
@@ -43,7 +58,8 @@ export default class ClassicalNoise extends React.PureComponent<IProps, IState> 
 			// if we lose context, ignore - no need to restore we're not animating
 			canvas.addEventListener("webglcontextlost", event => event.preventDefault(), false);
 
-			gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+			// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+			gl.viewport(0, 0, this.props.width, this.props.height);
 			const iglooProgram = igloo.program(vertex, pixel).use();
 			const glProgram = iglooProgram["program"];
 			iglooProgram.uniform("brightness", [brightness.r / 256, brightness.g / 256, brightness.b / 256, 1.0]);

@@ -9939,12 +9939,12 @@ function Panel(p) {
             fontFamily: "Arial",
             display: "inline-block"
         } },
-        React.createElement("div", { key: 'one', style: {
+        React.createElement("div", { key: "one", style: {
                 display: "block",
                 margin: 20,
                 padding: 10
             } }, p.heading),
-        React.createElement("div", { key: 'two', style: {
+        React.createElement("div", { key: "two", style: {
                 fontSize: 38,
                 borderRadius: 10,
                 width: 200,
@@ -9959,9 +9959,9 @@ function Panel(p) {
             "%",
             React.createElement("hr", null))));
 }
-ReactDOM.render((React.createElement(_1.default, { gridSize: 24, contrast: { r: 7, g: 7, b: 7 }, brightness: { r: 48, g: 48, b: 48 }, width: 1000, height: 800 },
+ReactDOM.render(React.createElement(_1.default, { key: "root", gridSize: 24, contrast: { r: 7, g: 7, b: 7 }, brightness: { r: 48, g: 48, b: 48 }, width: 1000, height: 800 },
     React.createElement(Panel, { heading: "Highest", rate: 62.31 }),
-    React.createElement(Panel, { heading: "Lowest", rate: 12.12 }))), document.getElementById("root"));
+    React.createElement(Panel, { heading: "Lowest", rate: 12.12 })), document.getElementById("root"));
 
 
 /***/ }),
@@ -10002,7 +10002,8 @@ var ClassicalNoise = (function (_super) {
                 var gl = igloo.gl;
                 // if we lose context, ignore - no need to restore we're not animating
                 canvas.addEventListener("webglcontextlost", function (event) { return event.preventDefault(); }, false);
-                gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+                // gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+                gl.viewport(0, 0, _this.props.width, _this.props.height);
                 var iglooProgram = igloo.program(shaders_1.vertex, shaders_1.pixel).use();
                 var glProgram = iglooProgram["program"];
                 iglooProgram.uniform("brightness", [brightness.r / 256, brightness.g / 256, brightness.b / 256, 1.0]);
@@ -10021,10 +10022,22 @@ var ClassicalNoise = (function (_super) {
                 console.error("Set-up Error", e);
             }
         };
-        _this.state = {};
+        _this.state = { oldWidth: props.width, oldHeight: props.height };
         return _this;
     }
-    ClassicalNoise.prototype.componentWillReceiveProps = function (newProps) { };
+    ClassicalNoise.prototype.componentWillReceiveProps = function (newProps) {
+        // if the size has changed then store the new size in the state
+        if (newProps.width !== this.props.width || newProps.height !== this.props.height) {
+            this.setState({ oldWidth: this.props.width, oldHeight: this.props.height });
+        }
+    };
+    ClassicalNoise.prototype.componentDidUpdate = function () {
+        // now mounted, if the current size is different to the previous size then re-render
+        if (this.state.oldHeight !== this.props.height || this.state.oldWidth !== this.props.width) {
+            if (!!this.canvas)
+                this.setupCanvas(this.canvas);
+        }
+    };
     ClassicalNoise.prototype.render = function () {
         var _a = this.props, width = _a.width, height = _a.height, children = _a.children;
         return (React.createElement("div", { style: { width: width, height: height, position: "relative" } },
