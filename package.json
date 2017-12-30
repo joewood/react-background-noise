@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/joewood/react-background-noise#readme",
   "dependencies": {
-    "igloo-ts": "^1.0.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "igloo-ts": "^1.0",
+    "react": "^16.2",
+    "react-dom": "^16.2"
   },
   "devDependencies": {
     "@types/react": "^16.0.31",
