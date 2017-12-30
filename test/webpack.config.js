@@ -6,11 +6,11 @@ module.exports = {
   entry: [
     // require.resolve('webpack-dev-server/client') + '?/',
     // require.resolve('webpack/hot/dev-server'),
-    './test.tsx'
+    './test/test.tsx'
   ],
   output: {
     pathinfo: true,
-    filename: './test.js',
+    filename: './test/lib/test.js',
     publicPath: '/'
   },
   devtool: 'cheap-module-source-map',

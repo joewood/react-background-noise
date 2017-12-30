@@ -16,6 +16,8 @@ export const pixel = `
         precision mediump float;
         uniform vec4 brightness;
         uniform vec4 contrast;
+        uniform float scale;
+        uniform vec2 offset;
 
         vec4 mod289(vec4 x)
         {
@@ -78,6 +80,6 @@ export const pixel = `
 
         void main()
         {
-            float tt = cnoise(gl_FragCoord.xy*0.07);
-            gl_FragColor = vec4(tt*contrast.r+brightness.r,tt*contrast.g+brightness.g,tt*contrast.b+brightness.b,1.0); 
+            float tt = cnoise(gl_FragCoord.xy*0.07*scale+offset);
+            gl_FragColor = vec4(tt*contrast.r+brightness.r, tt*contrast.g+brightness.g, tt*contrast.b+brightness.b,1.0); 
         }`;
