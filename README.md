@@ -18,7 +18,7 @@ import Background from "react-background-noise"
 </Background>
 ```
 
-See **test** directory for more examples. The below gif is limited by GIF compression artifacts and framerate, see the [mp4](docs/capture.mp4) for a better view. Here's an example of different zoom sizes:
+See **test** directory for more examples. The below gif is limited by GIF compression artifacts and framerate, see the [mp4](docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
 
 ![screen-grab](docs/capture-zoom.gif?raw=true)
 
