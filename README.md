@@ -1,6 +1,16 @@
-# react-background-noise
+# React Background Noise
 
 Simple component that renders a Perlin Noise Classical pattern as a background WebGL pattern. The render uses WebGL shader from [Stefan Gustavson](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf)
+
+See [demo here](https://joewood.github.com/react-background-noise).
+
+The below gif is limited by GIF compression artifacts and framerate, see the [mp4](https://github.com/joewood/react-background-noise/raw/master/docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
+
+![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
+
+And an example of adjusting the vertical offset:
+
+![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
 
 ## Installation
 
@@ -17,18 +27,6 @@ import Background from "react-background-noise"
   <div style={{color:"white"}}>Hello World</div>
 </Background>
 ```
-
-See **test** directory for more examples. See [demo here](https://joewood.github.com/react-background-noise).
-
-The below gif is limited by GIF compression artifacts and framerate, see the [mp4](https://github.com/joewood/react-background-noise/raw/master/docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
-
-![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
-
-And an example of adjusting the vertical offset:
-
-![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
-
-
 
 
 ## Additional Properties
