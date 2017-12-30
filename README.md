@@ -20,13 +20,13 @@ import Background from "react-background-noise"
 
 See **test** directory for more examples. See [demo here](https://joewood.github.com/react-background-noise).
 
-The below gif is limited by GIF compression artifacts and framerate, see the [mp4](docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
+The below gif is limited by GIF compression artifacts and framerate, see the [mp4](../../raw/master/docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
 
-![screen-grab](docs/capture-zoom.gif?raw=true)
+![screen-grab](../../raw/master/docs/capture-zoom.gif?raw=true)
 
 And an example of adjusting the vertical offset:
 
-![screen-grab](docs/capture-vert.gif?raw=true)
+![screen-grab](../../raw/master/docs/capture-vert.gif?raw=true)
 
 
 
