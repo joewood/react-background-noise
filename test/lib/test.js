@@ -1040,7 +1040,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ 2);
 var ReactDOM = __webpack_require__(/*! react-dom */ 19);
 var src_1 = __webpack_require__(/*! ../src */ 28);
-var panel_1 = __webpack_require__(/*! ./panel */ 31);
+var panel_1 = __webpack_require__(/*! ./panel */ 32);
 var labelStyle = {
     lineHeight: 3,
     verticalAlign: "center",
@@ -1079,19 +1079,13 @@ var TestBackground = /** @class */ (function (_super) {
                 React.createElement(panel_1.default, { heading: "Offset", contents: this.state.offsetX + "," + this.state.offsetY })),
             React.createElement("div", { key: "scale", style: labelStyle },
                 React.createElement("span", { style: { flex: "0 0 100px" } }, "Scale"),
-                React.createElement("input", { ref: function (ctrl) { return (_this.scale = ctrl); }, onChange: function (x) {
-                        return _this.setState({ scale: parseFloat(_this.scale.value) });
-                    }, type: "range", value: scale, min: 1, max: 1000, step: 10, style: { margin: 15, flex: 1 } })),
+                React.createElement("input", { ref: function (ctrl) { return (_this.scale = ctrl); }, onChange: function (x) { return _this.setState({ scale: parseFloat(_this.scale.value) }); }, type: "range", value: scale, min: 1, max: 1000, step: 10, style: { margin: 15, flex: 1 } })),
             React.createElement("div", { key: "offsetx", style: labelStyle },
                 React.createElement("span", { style: { flex: "0 0 100px" } }, "Offset X"),
-                React.createElement("input", { ref: function (ctrl) { return (_this.offsetX = ctrl); }, type: "range", onChange: function (x) {
-                        return _this.setState({ offsetX: parseFloat(_this.offsetX.value) });
-                    }, value: offsetX, min: 0, max: 100, step: 1, style: { margin: 15, flex: 1 } })),
+                React.createElement("input", { ref: function (ctrl) { return (_this.offsetX = ctrl); }, type: "range", onChange: function (x) { return _this.setState({ offsetX: parseFloat(_this.offsetX.value) }); }, value: offsetX, min: 0, max: 100, step: 1, style: { margin: 15, flex: 1 } })),
             React.createElement("div", { key: "offsety", style: labelStyle },
                 React.createElement("span", { style: { flex: "0 0 100px" } }, "Offset Y"),
-                React.createElement("input", { ref: function (ctrl) { return (_this.offsetY = ctrl); }, onChange: function (x) {
-                        return _this.setState({ offsetY: parseFloat(_this.offsetY.value) });
-                    }, type: "range", value: offsetY, min: 0, max: 100, step: 1, style: { margin: 15, flex: 1 } }))));
+                React.createElement("input", { ref: function (ctrl) { return (_this.offsetY = ctrl); }, onChange: function (x) { return _this.setState({ offsetY: parseFloat(_this.offsetY.value) }); }, type: "range", value: offsetY, min: 0, max: 100, step: 1, style: { margin: 15, flex: 1 } }))));
     };
     return TestBackground;
 }(React.Component));
@@ -18490,7 +18484,10 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ 2);
 var igloo_ts_1 = __webpack_require__(/*! igloo-ts */ 29);
-var shaders_1 = __webpack_require__(/*! ./shaders */ 30);
+// http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
+// Read Stefan's excellent paper for details on how this code works.
+var vertex = __webpack_require__(/*! raw-loader!./vertex.glsl */ 30);
+var pixel = __webpack_require__(/*! raw-loader!./shader.glsl */ 31);
 var ClassicalNoise = /** @class */ (function (_super) {
     __extends(ClassicalNoise, _super);
     function ClassicalNoise(props) {
@@ -18504,34 +18501,11 @@ var ClassicalNoise = /** @class */ (function (_super) {
             contrast = contrast || { r: 25, g: 20, b: 15 };
             scale = scale || 1;
             offset = offset || { x: 0.0, y: 0.0 };
-            _this.iglooProgram.uniform("brightness", [
-                brightness.r / 256,
-                brightness.g / 256,
-                brightness.b / 256,
-                1.0
-            ]);
-            _this.iglooProgram.uniform("contrast", [
-                contrast.r / 256,
-                contrast.g / 256,
-                contrast.b / 256,
-                1.0
-            ]);
+            _this.iglooProgram.uniform("brightness", [brightness.r / 256, brightness.g / 256, brightness.b / 256, 1.0]);
+            _this.iglooProgram.uniform("contrast", [contrast.r / 256, contrast.g / 256, contrast.b / 256, 1.0]);
             _this.iglooProgram.uniform("offset", [offset.x, offset.y]);
             _this.iglooProgram.uniform("scale", scale);
-            var verticesBuffer = _this.igloo.array(new Float32Array([
-                -1.0,
-                -1.0,
-                1.0,
-                -1.0,
-                -1.0,
-                1.0,
-                -1.0,
-                1.0,
-                1.0,
-                -1.0,
-                1.0,
-                1.0
-            ]), gl.STATIC_DRAW);
+            var verticesBuffer = _this.igloo.array(new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]), gl.STATIC_DRAW);
             verticesBuffer.bind();
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
@@ -18548,7 +18522,7 @@ var ClassicalNoise = /** @class */ (function (_super) {
             // if we lose context, ignore - no need to restore we're not animating
             // gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
             gl.viewport(0, 0, width, height);
-            _this.iglooProgram = _this.igloo.program(shaders_1.vertex, shaders_1.pixel).use();
+            _this.iglooProgram = _this.igloo.program(vertex, pixel).use();
             _this.glProgram = _this.iglooProgram["program"];
         };
         _this.setupCanvas = function (canvas) {
@@ -18567,29 +18541,14 @@ var ClassicalNoise = /** @class */ (function (_super) {
         _this.state = { oldWidth: props.width, oldHeight: props.height };
         return _this;
     }
-    // public componentWillReceiveProps(newProps: IProps) {
-    //   // if the size has changed then store the new size in the state
-    //   if (
-    //     newProps.width !== this.props.width ||
-    //     newProps.height !== this.props.height
-    //   ) {
-    //     this.setState({
-    //       oldWidth: this.props.width,
-    //       oldHeight: this.props.height
-    //     });
-    //   }
-    // }
     ClassicalNoise.prototype.componentDidUpdate = function (prevProps, preState) {
         // now mounted, if the current size is different to the previous size then re-render
         var _a = this.props, height = _a.height, width = _a.width, scale = _a.scale, offset = _a.offset;
-        if (prevProps.height !== this.props.height ||
-            prevProps.width !== this.props.width) {
+        if (prevProps.height !== this.props.height || prevProps.width !== this.props.width) {
             if (!!this.canvas)
                 this.setupCanvas(this.canvas);
         }
-        if (prevProps.scale !== scale ||
-            prevProps.offset.x !== offset.x ||
-            prevProps.offset.y !== offset.y) {
+        if (prevProps.scale !== scale || prevProps.offset.x !== offset.x || prevProps.offset.y !== offset.y) {
             if (!!this.canvas)
                 this.updateUniforms();
         }
@@ -19126,22 +19085,28 @@ exports.Framebuffer = Framebuffer;
 
 /***/ }),
 /* 30 */
-/*!************************!*\
-  !*** ./src/shaders.ts ***!
-  \************************/
+/*!***************************************************!*\
+  !*** ./node_modules/raw-loader!./src/vertex.glsl ***!
+  \***************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.vertex = "\n        precision mediump float;\n        attribute vec2 a_position;\n        void main() {\n            gl_Position = vec4(a_position, 0.0, 1.0);\n        }";
-exports.pixel = "\n        // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n        // Created by S.Guillitte \n        //\n        // Copyright (c) 2011 Stefan Gustavson. All rights reserved.\n        // Distributed under the MIT license. See LICENSE file.\n        // https://github.com/stegu/webgl-noise\n        //\n        precision mediump float;\n        uniform vec4 brightness;\n        uniform vec4 contrast;\n        uniform float scale;\n        uniform vec2 offset;\n\n        vec4 mod289(vec4 x)\n        {\n        return x - floor(x * (1.0 / 289.0)) * 289.0;\n        }\n\n        vec4 permute(vec4 x)\n        {\n        return mod289(((x*34.0)+1.0)*x);\n        }\n\n        vec4 taylorInvSqrt(vec4 r)\n        {\n        return 1.79284291400159 - 0.85373472095314 * r;\n        }\n\n        vec2 fade(vec2 t) {\n        return t*t*t*(t*(t*6.0-15.0)+10.0);\n        }\n\n        // Classic Perlin noise\n        float cnoise(vec2 P)\n        {\n        vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);\n        vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);\n        Pi = mod289(Pi); // To avoid truncation effects in permutation\n        vec4 ix = Pi.xzxz;\n        vec4 iy = Pi.yyww;\n        vec4 fx = Pf.xzxz;\n        vec4 fy = Pf.yyww;\n\n        vec4 i = permute(permute(ix) + iy);\n\n        vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;\n        vec4 gy = abs(gx) - 0.5 ;\n        vec4 tx = floor(gx + 0.5);\n        gx = gx - tx;\n\n        vec2 g00 = vec2(gx.x,gy.x);\n        vec2 g10 = vec2(gx.y,gy.y);\n        vec2 g01 = vec2(gx.z,gy.z);\n        vec2 g11 = vec2(gx.w,gy.w);\n\n        vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));\n        g00 *= norm.x;  \n        g01 *= norm.y;  \n        g10 *= norm.z;  \n        g11 *= norm.w;  \n\n        float n00 = dot(g00, vec2(fx.x, fy.x));\n        float n10 = dot(g10, vec2(fx.y, fy.y));\n        float n01 = dot(g01, vec2(fx.z, fy.z));\n        float n11 = dot(g11, vec2(fx.w, fy.w));\n\n        vec2 fade_xy = fade(Pf.xy);\n        vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);\n        float n_xy = mix(n_x.x, n_x.y, fade_xy.y);\n        return 2.3 * n_xy;\n        }\n\n        void main()\n        {\n            float tt = cnoise(gl_FragCoord.xy*0.07*scale+offset);\n            gl_FragColor = vec4(tt*contrast.r+brightness.r, tt*contrast.g+brightness.g, tt*contrast.b+brightness.b,1.0); \n        }";
-
+module.exports = "precision mediump float;\r\nattribute vec2 a_position;\r\n\r\nvoid main() {\r\n    gl_Position = vec4(a_position, 0.0, 1.0);\r\n}"
 
 /***/ }),
 /* 31 */
+/*!***************************************************!*\
+  !*** ./node_modules/raw-loader!./src/shader.glsl ***!
+  \***************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = "// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n// Created by S.Guillitte \n//\n// Copyright (c) 2011 Stefan Gustavson. All rights reserved.\n// Distributed under the MIT license. See LICENSE file.\n// https://github.com/stegu/webgl-noise\n//\nprecision mediump float;\nuniform vec4 brightness;\nuniform vec4 contrast;\nuniform float scale;\nuniform vec2 offset;\n\nvec4 mod289(vec4 x)\n{\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x)\n{\n  return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nvec2 fade(vec2 t) {\nreturn t*t*t*(t*(t*6.0-15.0)+10.0);\n}\n\n// Classic Perlin noise\nfloat cnoise(vec2 P)\n{\n  vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);\n  vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);\n  Pi = mod289(Pi); // To avoid truncation effects in permutation\n  vec4 ix = Pi.xzxz;\n  vec4 iy = Pi.yyww;\n  vec4 fx = Pf.xzxz;\n  vec4 fy = Pf.yyww;\n\n  vec4 i = permute(permute(ix) + iy);\n\n  vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;\n  vec4 gy = abs(gx) - 0.5 ;\n  vec4 tx = floor(gx + 0.5);\n  gx = gx - tx;\n\n  vec2 g00 = vec2(gx.x,gy.x);\n  vec2 g10 = vec2(gx.y,gy.y);\n  vec2 g01 = vec2(gx.z,gy.z);\n  vec2 g11 = vec2(gx.w,gy.w);\n\n  vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));\n  g00 *= norm.x;  \n  g01 *= norm.y;  \n  g10 *= norm.z;  \n  g11 *= norm.w;  \n\n  float n00 = dot(g00, vec2(fx.x, fy.x));\n  float n10 = dot(g10, vec2(fx.y, fy.y));\n  float n01 = dot(g01, vec2(fx.z, fy.z));\n  float n11 = dot(g11, vec2(fx.w, fy.w));\n\n  vec2 fade_xy = fade(Pf.xy);\n  vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);\n  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);\n  return 2.3 * n_xy;\n}\n\nvoid main()\n{\n  float tt = cnoise(gl_FragCoord.xy*0.07*scale+offset);\n  gl_FragColor = vec4(tt*contrast.r+brightness.r, tt*contrast.g+brightness.g, tt*contrast.b+brightness.b,1.0); \n}\n"
+
+/***/ }),
+/* 32 */
 /*!************************!*\
   !*** ./test/panel.tsx ***!
   \************************/

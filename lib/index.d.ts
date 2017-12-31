@@ -23,6 +23,11 @@ export interface IProps {
     customRandom?: {
         random(): number;
     };
+    scale?: number;
+    offset?: {
+        x: number;
+        y: number;
+    };
 }
 export interface IState {
     oldWidth: number;
@@ -30,9 +35,13 @@ export interface IState {
 }
 export default class ClassicalNoise extends React.PureComponent<IProps, IState> {
     private canvas;
+    private iglooProgram;
+    private glProgram;
+    private igloo;
     constructor(props: IProps);
-    componentWillReceiveProps(newProps: IProps): void;
-    componentDidUpdate(): void;
+    componentDidUpdate(prevProps: IProps, preState: IState): void;
+    private updateUniforms;
+    private initCanvas;
     private setupCanvas;
     render(): JSX.Element;
 }
