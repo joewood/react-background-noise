@@ -5,7 +5,7 @@
         "noImplicitAny": false,
         "sourceMap": true,
         "outDir": "lib",
-        "jsx":"react",
+        "jsx": "react",
         "declaration": true
     },
     "files": [
