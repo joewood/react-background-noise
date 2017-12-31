@@ -6,16 +6,11 @@ See [demo here](https://joewood.github.com/react-background-noise).
 
 The below gif is limited by GIF compression artifacts and framerate, see the [mp4](https://github.com/joewood/react-background-noise/raw/master/docs/capture.mp4?raw=true) for a better view. Here's an example of different zoom sizes:
 
-<div><video width="600" height="600" controls> 
-  <source src="https://github.com/joewood/react-background-noise/raw/master/docs/capture.mp4?raw=true" type="video/mp4">
-</video>
-</div>
-
-[screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
+![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
 
 And an example of adjusting the vertical offset:
 
-[screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
+![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
 
 ## Installation
 
