@@ -10,11 +10,11 @@ The below gif is limited by GIF compression artifacts and framerate, see the [mp
   <source src="https://github.com/joewood/react-background-noise/raw/master/docs/capture.mp4?raw=true" type="video/mp4">
 </video>
 
-![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
+[screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-zoom.gif?raw=true)
 
 And an example of adjusting the vertical offset:
 
-![screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
+[screen-grab](https://github.com/joewood/react-background-noise/raw/master/docs/capture-vert.gif?raw=true)
 
 ## Installation
 
