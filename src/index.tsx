@@ -1,9 +1,10 @@
 import * as React from "react";
 import Igloo, { Program } from "igloo-ts";
-import { vertex, pixel } from "./shaders";
 
 // http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 // Read Stefan's excellent paper for details on how this code works.
+const vertex = require("raw-loader!./vertex.glsl");
+const pixel = require("raw-loader!./shader.glsl");
 
 /**
  * You can pass in a random number generator object if you like.
