@@ -1,36 +1,28 @@
 {
-  "name": "react-background-noise",
-  "version": "0.1.6",
-  "description": "React Component for Noise Generated background",
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "npm test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/joewood/react-background-noise.git"
-  },
-  "types": "lib/index.d.ts",
-  "keywords": [
-    "react",
-    "webgl",
-    "noise"
-  ],
-  "author": "Joe Wood",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/joewood/react-background-noise/issues"
-  },
-  "homepage": "https://github.com/joewood/react-background-noise#readme",
-  "dependencies": {
-    "igloo-ts": "^1.0",
-    "raw-loader": "^0.5",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
-  },
-  "devDependencies": {
-    "@types/react": "^16.4.18",
-    "@types/react-dom": "^16.0.9",
-    "typescript": "^2.9.2"
+    "name": "workspace-root",
+    "private": true,
+    "workspaces": [
+      "packages/react-background-noise",
+      "packages/test"
+    ],
+    "scripts": {
+        "build": "npm run build --workspaces",
+        "lint": "npm run lint --workspaces "
+    },
+    "devDependencies": {
+        "eslint-plugin-react-hooks": "^5.1.0",
+        "@typescript-eslint/eslint-plugin": "^8.20.0",
+        "@typescript-eslint/parser": "^8.20.0",
+        "eslint": "^9.18.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-prettier": "^5.2.1",
+        "prettier": "^3.4.2",
+        "typescript": "^5.7.3"
+      },
+      "prettier": {
+        "singleQuote": false,
+        "tabWidth": 4,
+        "printWidth": 120
+      }
+    
   }
-}

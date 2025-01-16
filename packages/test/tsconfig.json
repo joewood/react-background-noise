@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "skipLibCheck": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "jsx": "react",
+        "target": "ES2024",
+        "module": "NodeNext",
+        "moduleResolution": "nodenext"
+    },
+    "include": ["*.tsx"]
+}

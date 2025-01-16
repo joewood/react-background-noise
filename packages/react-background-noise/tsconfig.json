@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext", // Target modern JavaScript
+        "module": "ESNext", // Use ESNext module system
+        "lib": ["DOM", "ESNext"], // Include DOM and ESNext libraries
+        "declaration": true, // Generate declaration files
+        "declarationDir": "lib", // Output directory for declaration files
+        "outDir": "lib", // Output directory for compiled files
+        "strict": true, // Enable all strict type-checking options
+        "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
+        "skipLibCheck": true, // Skip type checking of declaration files
+        "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
+        "moduleResolution": "node", // Use Node.js module resolution
+        "jsx": "react", // Support JSX with React
+        "sourceMap": true, // Generate source maps
+        "resolveJsonModule": true, // Allow importing JSON files
+        "isolatedModules": true // Ensure each file can be safely transpiled without relying on other imports
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx"], // Include all TypeScript and TSX files in the src directory
+    "exclude": ["node_modules", "lib"] // Exclude node_modules and output directory
+}

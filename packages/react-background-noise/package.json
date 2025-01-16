@@ -1,0 +1,41 @@
+{
+  "name": "react-background-noise",
+  "version": "0.2.0",
+  "description": "React Component for Noise Generated background",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "npm test",
+    "lint": "eslint --config ../../eslint.config.mjs",
+    "build": "tsc -p ."
+  },
+  "private":false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joewood/react-background-noise.git"
+  },
+  "types": "lib/index.d.ts",
+  "keywords": [
+    "react",
+    "webgl",
+    "noise"
+  ],
+  "author": "Joe Wood",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joewood/react-background-noise/issues"
+  },
+  "homepage": "https://github.com/joewood/react-background-noise#readme",
+  "dependencies": {
+    "igloo-ts": "^1.2.0"
+  },
+  "peerDependencies": {
+    "webpack-glsl-loader":"^1.0.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3"
+  }
+}
